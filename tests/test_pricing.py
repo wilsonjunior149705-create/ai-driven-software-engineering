@@ -36,12 +36,14 @@ def test_fixed_coupon_shipping_free():
     assert q.total == 225.00
 
 
-def test_discount_never_exceeds_subtotal():
+def test_discount_never_exceeds_subtotal_and_respects_50_percent_cap():
     items = [LineItem("A", 10.0, 1)]  # subtotal 10
-    q = calculate_quote(items, "FIXED15")  # deveria limitar ao subtotal
+    q = calculate_quote(items, "FIXED15")  # desconto 15 → limitado a 50%
     assert q.subtotal == 10.00
-    assert q.discount == 10.00
-    assert q.total == 20.00  # after_discount 0 + frete 20
+    assert q.discount == 5.00
+    assert q.shipping == 20.00
+    assert q.total == 25.00
+
 
 
 def test_invalid_coupon_raises():
